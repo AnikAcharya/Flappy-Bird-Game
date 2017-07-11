@@ -1,0 +1,27 @@
+using UnityEngine;
+using System.Collections;
+
+public class Instantiator : MonoBehaviour {
+    public float maxPos =11.28f;
+    public float minPos = -1.25f;
+    public GameObject[] obstacle;
+    int obsNo;
+    public float delayTime = 2f;
+    float timer;
+	// Use this for initialization
+	void Start () {
+        timer =delayTime;
+	}
+	
+	// Update is called once per frame
+	void Update () {
+        timer -= Time.deltaTime;
+        if(timer<=0){
+
+            Vector3 obsPos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+            obsNo = Random.Range(0,3);
+        Instantiate(obstacle[obsNo], obsPos, transform.rotation);
+        timer = delayTime;
+	}
+}
+    }
