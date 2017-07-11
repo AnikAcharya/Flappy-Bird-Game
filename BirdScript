@@ -1,0 +1,172 @@
+//code for moving he ball,detecting collisions with obstacles
+
+using UnityEngine;
+using System.Collections;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+public class colCheck : MonoBehaviour {
+
+    public GameObject column;
+     Rigidbody2D rb;
+    public float jumpForce;
+    public float noForce;
+    public float maxPos;
+    public float minPos;
+    public int sceneIndex;
+    public int score;
+    
+      public int hs = 0;
+    public Text scoreText;
+    public Text highScore;
+    public Text flash;
+     public Vector3 position;
+
+     private Animator anim;
+     private bool isDead = false;
+     public Button[] buttons;
+     public audioManager am;
+     public AudioSource au;
+     public AudioClip s1;
+     public AudioClip s2;
+   
+	// Use this for initialization
+
+   void Start () {
+
+        anim = GetComponent<Animator>();
+        rb = GetComponent<Rigidbody2D>();
+        position = transform.position;
+        score = 0;
+        scoreText.text = "Score " + 0;
+        PlayerPrefs.GetInt("Highscore0 ");
+        hs = PlayerPrefs.GetInt("Highscore0 ");
+      
+	}
+	
+	// Update is called once per frame
+	void Update () {
+        
+        PlayerPrefs.SetInt("Highscore0 ", hs);
+        
+        if(isDead==false){
+            if (score>hs) {
+
+
+            hs = score;
+       
+        }
+
+
+
+            if (Input.touchCount > 0)
+            {
+
+
+                flash.gameObject.SetActive(false);
+
+
+                Touch touch = Input.GetTouch(0);
+
+
+                if (touch.phase == TouchPhase.Ended)
+                {
+
+                    au.clip = s1;
+                    au.Play();
+                    rb.gravityScale = 1.0f;
+
+                }
+
+                else
+                {
+
+
+                    anim.SetTrigger("Flap");
+                    au.clip = s1;
+                    au.Play();
+                    rb.velocity = new Vector2(rb.velocity.x, 0);
+
+                    rb.AddForce(new Vector2(0, jumpForce));
+                    rb.gravityScale = 0.0f;
+                    column.SetActive(true);
+
+                }
+
+
+
+            }
+
+            else {
+              
+                flash.text = "TAP TO BEGIN";
+            
+            }
+    position = transform.position;
+
+    position.y = Mathf.Clamp(position.y, minPos, maxPos);
+
+    transform.position = position;
+        if(transform.position.y==-2.7){
+       
+            anim.SetTrigger("Die");
+            
+            }
+       
+	}
+
+    
+   }
+
+     void OnCollisionEnter2D(Collision2D col){
+         
+
+       if (col.gameObject.tag == "destroy" || col.gameObject.tag == "destroy2"){
+             anim.SetTrigger("Die");
+             isDead = true;
+             
+             rb.velocity = new Vector2(rb.velocity.x, 0);
+            
+             rb.gravityScale = 1.0f;
+             if (col.rigidbody.tag == "destroy") {
+
+              
+                 column.SetActive(false);
+             }
+             
+             foreach (Button button in buttons) {
+                  button.gameObject.SetActive(true);
+              }
+         
+             }
+
+           if(col.rigidbody.tag=="pass"){
+            
+              au.clip = s2;
+              au.Play();
+             score++;
+            
+              }
+        scoreText.text = "Score " + score;
+
+    
+
+
+    
+    }
+
+
+     public void Restart() {
+
+         SceneManager.LoadScene(sceneIndex);
+     }
+
+     public void Quit() {
+
+         Application.Quit();
+     }
+
+     public void Menu() {
+         SceneManager.LoadScene(0);
+     }
+    
+}
