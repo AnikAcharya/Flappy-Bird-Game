@@ -1,0 +1,44 @@
+using UnityEngine;
+using System.Collections;
+
+public class Testing : MonoBehaviour {
+    public float speed ;
+    public float speed2;
+    public Vector3 position;
+    public float delayTime;
+    public float moveSpeed;
+    float timer;
+
+	// Use this for initialization
+	void Start () {
+        timer = delayTime;
+	}
+	
+	// Update is called once per frame
+	void Update () {
+
+        
+        if (timer >= 0){
+       
+            timer -= Time.deltaTime;
+            transform.Translate(Vector3.up * moveSpeed * Time.deltaTime);
+            position = transform.position;
+
+            position.y = Mathf.Clamp(position.y, 177.52f, 181f);
+
+            transform.position = position;
+        }
+
+        else {
+           
+            timer = delayTime;
+         
+            moveSpeed = -moveSpeed;
+        
+        }
+        transform.Translate(new Vector3(-1,0,0) * speed * Time.deltaTime);
+
+	}
+
+
+}
